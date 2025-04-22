@@ -1,0 +1,6 @@
+numpy
+torch
+openai-whisper
+torchaudio
+sagemaker
+tqdm
