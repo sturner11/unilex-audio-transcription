@@ -10,8 +10,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: opentofu/setup-opentofu@v1
+
       - name: Checkout code
         uses: actions/checkout@v3
+
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -44,20 +47,15 @@ jobs:
         run: |
           docker push 307946674662.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest
 
-      - name: Build opentf from source
-        run: |
-          git clone https://github.com/opentffoundation/opentf.git
-          cd opentf
-          go build -o $GITHUB_WORKSPACE/opentf-bin
-      - name: Symlink opentf
-        run: sudo ln -s $GITHUB_WORKSPACE/opentf-bin /usr/local/bin/opentf
+      - name: OpenTofu fmt
+        id: fmt
+        run: tofu fmt -check
+        continue-on-error: true
 
-      - name: Initialize opentf
-        run: opentf init -lock=false
-
-      - name: Validate opentf
-        run: opentf validate
+      - name: OpenTofu Init
+        id: init
+        run: tofu init
 
       - name: Apply OpenTofu Configuration
         run: |
-          opentofu apply -auto-approve
+          tofu apply -auto-approve
