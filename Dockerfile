@@ -1,7 +1,7 @@
 FROM python:3.8-slim
 
-ENV AWS_DEFAULT_REGION=us-west-2
-ENV AWS_REGION=us-west-2
+ENV AWS_DEFAULT_REGION=us-east-1
+ENV AWS_REGION=us-east-1
 
 
 COPY code /opt/var
@@ -16,5 +16,4 @@ RUN python -m ipykernel install --user --name python3 --display-name "Python 3"
 COPY run_notebook.sh /opt/ml/run_notebook.sh
 RUN chmod +x /opt/ml/run_notebook.sh
 
-#ENTRYPOINT ["/opt/ml/run_notebook.sh"]
-CMD ["bin/bash"]
+ENTRYPOINT ["/opt/ml/run_notebook.sh"]
