@@ -6,7 +6,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.9.0"  # or whichever newer version you prefer
+      version = ">= 4.9.0" # or whichever newer version you prefer
     }
   }
   required_version = ">= 1.0.0"
@@ -68,8 +68,8 @@ resource "aws_s3_bucket" "notebook_output_bucket" {
 # (B) Upload the .ipynb file (as whisper_deploy.ipynb) as an S3 object
 resource "aws_s3_bucket_object" "notebook_file" {
   bucket = aws_s3_bucket.notebook_bucket.bucket
-  key    = var.s3_input_key  # This will be "input/whisper_deploy.ipynb"
-  source = "../whisper_deploy.ipynb"  # local path to your notebook file
+  key    = var.s3_input_key          # This will be "input/whisper_deploy.ipynb"
+  source = "../whisper_deploy.ipynb" # local path to your notebook file
 
   # Ensure updates when the local file changes
   etag = filemd5("../whisper_deploy.ipynb")

@@ -4,7 +4,8 @@ This repo includes the jupyter notebook, python scripts, and terraform to deploy
 audio transcription for the service unilex. It allows for multiple languages and is built off a CI/CD process using via 
 opentofu and github actions. Neither opentofu nor terraform currnetly support direct creation/management of sagemaker notebooks,
 so we used papermill to help run them via sagemaker processing jobs. This allows for a seemless deployment of new models and endpoints. 
-The current sequence we used 
+Additionally ```./whisper-training``` has the jupyter notebook that could be used for fine tuning the model based on specific data
+
 
 ### Running Locally
 
@@ -20,6 +21,10 @@ The current sequence we used
  - Set up s3 Bucket to be used for tofu configuration and set up file directory
  - install opentofu with ```brew install opentofu``` (verify installation with ```tofu --version```)
 
+2. Jupyter Notebook
+- The jupyter notebook is prepped to run directly with correct aws permissions.
+- Can be run locally, or added to a jupyter notebook in your chosen space
+
 2. Terraform files
  - Configure vars
  - Run in the setup files for each stage run ```tofu init``` followed by ```tofu plan``` and ```tofu apply``` to create the needed setup before deploy
@@ -29,5 +34,3 @@ The current sequence we used
      - IAM Roles
      - S3 Buckets and upload
      - Sagemaker process to deploy endpoint
-## Whisper Endpoint Test Code
-I found the whisper-inference-deploy.ipynb online and modified it to work in the current iteration of Sagemaker. I ran it and it works. Note that you have to copy the src/ directory into your sagemaker instance directory. I imagine you could add those files in code blocks in the jupyter notebook like the Lab 5 code did. You might also need to change the region when you retrieve the sagemaker image uri. Also, I ran the notebook on a ml.g4dn.large. Make sure you give it a good amount of storage when you boot up the notebook instance.
