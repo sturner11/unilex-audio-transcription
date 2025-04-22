@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install nbQA for Notebook Linting
+        run: |
+          pip install nbqa flake8
+          nbqa flake8 whisper_deploy.ipynb
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker Image
+        run: |
+          # Build image for linux/amd64 (force platform and no cache for a clean build)
+          docker buildx build --platform linux/amd64 --no-cache --pull --load -t my-lambda-image:latest .
+          # Tag image with your ECR repository URI
+          docker tag my-lambda-image:latest 307946674662.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest
+
+      - name: Push Docker Image to ECR
+        run: |
+          docker push 307946674662.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest
+
+      - name: Install OpenTofu CLI
+        run: |
+          # Replace the URL and version as needed
+          curl -L https://github.com/opentofu/opentofu/releases/download/v0.1.0/opentofu_0.1.0_linux_amd64.tar.gz | tar -xz
+          sudo mv opentofu /usr/local/bin/
+          opentofu version
+
+      - name: Initialize OpenTofu
+        run: |
+          opentofu init
+
+      - name: Apply OpenTofu Configuration
+        run: |
+          opentofu apply -auto-approve
