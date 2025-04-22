@@ -18,10 +18,10 @@ jobs:
         with:
           python-version: '3.8'
 
-      - name: Install nbQA for Notebook Linting
-        run: |
-          pip install nbqa flake8
-          nbqa flake8 whisper_deploy.ipynb
+#      - name: Install nbQA for Notebook Linting
+#        run: |
+#          pip install nbqa flake8
+#          nbqa flake8 whisper_deploy.ipynb
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2

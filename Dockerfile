@@ -4,10 +4,6 @@ COPY code /opt/var
 COPY ./requirements.txt  .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Install necessary packages
-RUN pip install --upgrade pip && \
-    pip install jupyter ipykernel papermill
-
 # Register the default Python kernel under the name "python3"
 RUN python -m ipykernel install --user --name python3 --display-name "Python 3"
 
