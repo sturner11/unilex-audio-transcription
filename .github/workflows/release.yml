@@ -39,23 +39,26 @@ jobs:
       - name: Build Docker Image
         run: |
           # Build image for linux/amd64 (force platform and no cache for a clean build)
-          docker buildx build --platform linux/amd64 --no-cache --pull --load -t my-lambda-image:latest .
+          docker buildx build --platform linux/amd64 --no-cache --pull --load -t my-sagemaker-processing:latest .
           # Tag image with your ECR repository URI
-          docker tag my-lambda-image:latest 307946674662.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest
+          docker tag my-sagemaker-processing:latest 307946674662.dkr.ecr.us-east-1.amazonaws.com/my-sagemaker-processing:latest
 
       - name: Push Docker Image to ECR
         run: |
-          docker push 307946674662.dkr.ecr.us-east-1.amazonaws.com/my-lambda-repo:latest
+          docker push 307946674662.dkr.ecr.us-east-1.amazonaws.com/my-sagemaker-processing:latest
 
       - name: OpenTofu fmt
         id: fmt
         run: tofu fmt -check
         continue-on-error: true
+        working-directory: ./iac
 
       - name: OpenTofu Init
         id: init
         run: tofu init
+        working-directory: ./iac
 
       - name: Apply OpenTofu Configuration
         run: |
           tofu apply -auto-approve
+        working-directory: ./iac
