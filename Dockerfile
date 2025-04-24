@@ -1,15 +1,10 @@
-FROM python:3.8-slim
+FROM node:18-alpine
 
-COPY code /opt/var
-COPY ./requirements.txt  .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production
 
-# Register the default Python kernel under the name "python3"
-RUN python -m ipykernel install --user --name python3 --display-name "Python 3"
+COPY server/ ./server
 
-
-# Copy your entrypoint script and other assets as needed
-COPY run_notebook.sh /opt/ml/run_notebook.sh
-RUN chmod +x /opt/ml/run_notebook.sh
-
-ENTRYPOINT ["/opt/ml/run_notebook.sh"]
+EXPOSE 8080
+CMD ["node", "server/index.js"]
